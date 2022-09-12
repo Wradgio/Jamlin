@@ -99,16 +99,17 @@ public class TranslationExtractDictionaryRecord {
 
 
     /**
+     * Find if translate exists and if not add it
      *
      * @param translate TranslationValue
      * @return boolean
      */
     boolean addTranslate(TranslationValue translate) {
-        // find if any occurrence for this path, selector and and language exists
+        // find if any occurrence for this path, selector and language exists
         ArrayList<Integer> foundTranslates = findTranslates(translate);
 
         // if not, add this
-        if (foundTranslates.size()<=0) {
+        if (foundTranslates.size() <= 0) {
             this.translates.add(translate);
             return true;
         }
