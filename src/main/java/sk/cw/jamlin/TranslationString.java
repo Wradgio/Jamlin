@@ -58,6 +58,47 @@ public class TranslationString {
     }
 
 
+
+    /**
+     *
+     * @param translate TranslationValue
+     * @return int
+     */
+    public ArrayList<Integer> findTranslates(TranslationValue translate) {
+        ArrayList<Integer> foundTranslates = new ArrayList<>();
+
+        if (translations.size()>0) {
+            for (int i = 0; i < translations.size(); i++) {
+                if ( translations.get(i).getLangCode().equals(translate.getLangCode()) &&
+                        translations.get(i).getTranslation().equals(translate.getTranslation()) ) {
+                    foundTranslates.add(i);
+                }
+            }
+        }
+
+        return foundTranslates;
+    }
+
+    /**
+     * Find if translate exists and if not add it
+     *
+     * @param translate TranslationValue
+     * @return boolean
+     */
+    boolean addTranslation(TranslationValue translate) {
+        // find if any occurrence for this path, selector and language exists
+        ArrayList<Integer> foundTranslates = findTranslates(translate);
+
+        // if not, add this
+        if (foundTranslates.size() <= 0) {
+            this.translations.add(translate);
+            return true;
+        }
+
+        return false;
+    }
+
+
     public String getStringOrig() {
         return stringOrig;
     }
