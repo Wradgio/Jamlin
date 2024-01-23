@@ -33,6 +33,14 @@ public class Config {
         parseConfigInput();
     }
 
+    public Config(String type, String input, String langCode, String langName) {
+        this.type = type;
+        this.input = input;
+        this.sources = new ConfigSource();
+        this.language = new Language(langCode, langName);
+        parseConfigInput();
+    }
+
 
     /* METHODS */
     private void parseConfigInput() {

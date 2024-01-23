@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
@@ -102,7 +102,7 @@ public class JamlinFiles {
             // get old result from file
             String oldResultInput = "";
             try {
-                oldResultInput = new String( java.nio.file.Files.readAllBytes(Paths.get(oldResultFilePath)), Charset.forName("UTF-8") );
+                oldResultInput = new String( java.nio.file.Files.readAllBytes(Paths.get(oldResultFilePath)), StandardCharsets.UTF_8 );
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -424,7 +424,7 @@ public class JamlinFiles {
         TranslationExtractDictionaryFileWrap oldDictionary = null;
         // first read JSON file into string
         try {
-            oldResultInput = new String( java.nio.file.Files.readAllBytes(Paths.get(target.getPath())), Charset.forName("UTF-8") );
+            oldResultInput = new String( java.nio.file.Files.readAllBytes(Paths.get(target.getPath())), StandardCharsets.UTF_8 );
         } catch (IOException e) {
             e.printStackTrace();
         }

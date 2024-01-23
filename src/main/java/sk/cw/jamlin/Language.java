@@ -10,12 +10,22 @@ public class Language {
 
     private String code = "";
     private Locale lang = null;
+    private String name = "";
 
     public Language() {
     }
 
     public Language(String code) {
         this.setCode(code);
+    }
+
+    public Language(String code, String name) {
+        this.setCode(code);
+        if (this.name.trim().equals("")) {
+            this.setName(code);
+        } else {
+            this.setName(name);
+        }
     }
 
 
@@ -111,6 +121,13 @@ public class Language {
 
     public Locale getLang() {
         return lang;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName (String name) {
+        this.name = name;
     }
 
 }

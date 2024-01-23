@@ -47,7 +47,7 @@ public class Translation {
 
 
     /**
-     * Extract strings from
+     * Extract strings from source - most important part for Extract action
      * @param source String
      * @return TranslationExtractResult
      */
@@ -67,7 +67,7 @@ public class Translation {
                 setLanguage( (new Language(extractedLangCode)) );
             }
 
-            // loop selectors and get the most important results of all
+            // loop selectors and GET THE MOST IMPORTANT RESULTS OF ALL !!!
             for (int i=0; i<config.getSelectors().size(); i++) {
                 String selector = config.getSelectors().get(i).getSelector();
                 String selectorName = config.getSelectors().get(i).getName();
@@ -93,10 +93,13 @@ public class Translation {
                         language = new Language("xx");
                     }
                     if (selectorType.equals(TranslationBlock.types.ATTRIBUTE.toString().toLowerCase()) && !selectorAttrName.trim().equals("")) {
+                        // adding translation string from html tag attribute
                         translationStringId = translationBlock.addTranslationString(selectorResult.get(j).attr(selectorAttrName), selectorResult.get(j).cssSelector(), language.getCode(), selectorResult.get(j).attr(selectorAttrName));
                     } else if (selectorType.equals("value")) {
+                        // adding translation string from html tag value (input, textarea, ...)
                         translationStringId = translationBlock.addTranslationString(selectorResult.get(j).val(), selectorResult.get(j).cssSelector(), language.getCode(), selectorResult.get(j).val());
                     } else {
+                        // adding translation string from text inside tag's opening and closing
                         translationStringId = translationBlock.addTranslationString(selectorResult.get(j).text(), selectorResult.get(j).cssSelector(), language.getCode(), selectorResult.get(j).text());
                     }
 
