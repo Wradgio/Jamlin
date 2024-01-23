@@ -115,8 +115,8 @@ public class TranslationExtractResult {
                                 oldResult.getTranslationBlocks().get(sameOldBlockId).getTranslationStrings().get(sameOldStringId).setStringOrig(newString.getStringOrig());
 
                                 // old translationString - update values
-                                if ( newResult.getTranslationBlocks().get(i).getTranslationStrings().get(j).getTranslations().size()>0 ) {
-                                    for (int k=0; k<newResult.getTranslationBlocks().get(i).getTranslationStrings().get(j).getTranslations().size(); k++) {
+                                if ( newResult.getTranslationBlocks().get(i).getTranslationStrings().get(j).getTranslations().size()>0 ) { // if there are any translations in new (html)
+                                    for (int k=0; k<newResult.getTranslationBlocks().get(i).getTranslationStrings().get(j).getTranslations().size(); k++) { // loop new = from html
                                         TranslationValue newValue = newResult.getTranslationBlocks().get(i).getTranslationStrings().get(j).getTranslations().get(k);
                                         // translationValue with same langCode
                                         int sameOldValueId = oldResult.getTranslationBlocks().get(sameOldBlockId).getTranslationStrings().get(sameOldStringId).getTranslationValueByLang(newValue.getLangCode());

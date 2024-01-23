@@ -1,6 +1,8 @@
 package sk.cw.jamlin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Marcel Zúbrik on 26.3.2018.
@@ -8,6 +10,8 @@ import java.util.ArrayList;
 public class TranslationExtractDictionary {
 
     private ArrayList<TranslationExtractDictionaryRecord> records;
+
+    Map<String, String> languages = new HashMap<>();
 
     TranslationExtractDictionary(ArrayList<TranslationExtractDictionaryRecord> records) {
         this.records = records;
@@ -84,6 +88,7 @@ public class TranslationExtractDictionary {
                 }
             }
         }
+        this.languages = this.getDictionaryLanguages();
     }
 
     /**
@@ -92,20 +97,26 @@ public class TranslationExtractDictionary {
      * @return TranslationExtractDictionary
      */
     TranslationExtractDictionary mergeOldDictionary(TranslationExtractDictionary oldDictionary) {
-        // loop new record to update its records - old records that don't match are not merged and will be removed
+        // loop new record (html) to update its records - old records (json) that don't match are not merged and will be removed
         for (int i = 0; i < this.getRecords().size(); i++) {
             String phrase = this.getRecords().get(i).getPhrase();
             Language language = this.getRecords().get(i).getLanguage();
-            // get old records with same phrase as new one
+            // get indexes of old records (json) with same phrase as new one (html)
             ArrayList<Integer> oldRecordsMatchIndexes = oldDictionary.findRecordByPhrase(phrase, language);
-            if ( oldRecordsMatchIndexes.size()>0 ) {
-                // loop old records and add their translates to new translates
+            if ( oldRecordsMatchIndexes.size() > 0 ) { // found some records
+                // loop found old records' indexes (json) and add their translations to new records (html)
                 for (Integer j: oldRecordsMatchIndexes) {
                     ArrayList<TranslationValue> translates = oldDictionary.getRecords().get(j).getTranslates();
-                    if ( translates.size()>0 ) {
+                    if ( translates.size() > 0 ) {
                         for (TranslationValue translate: translates) {
                             // adding translates
                             this.getRecords().get(i).addTranslate(translate);
+                            // add translates to occurrences
+                            for (int o = 0; o < this.getRecords().get(i).getOccurrences().size(); o++) {
+                                for (int ts = 0; ts < this.getRecords().get(i).getOccurrences().get(o).getTranslationStrings().size(); ts++) {
+                                    this.getRecords().get(i).getOccurrences().get(o).getTranslationStrings().get(ts).addTranslation(translate);
+                                }
+                            }
                         }
                     }
 
@@ -115,6 +126,32 @@ public class TranslationExtractDictionary {
 
         return this;
     }
+
+
+    /**
+     *
+     * @return Map<String, String>
+     */Map<String, String> getDictionaryLanguages() {
+        Map<String, String> languages = new HashMap<>();
+
+        this.records.forEach(r -> {
+            if (!languages.containsKey(r.getLanguage().getCode())) {
+                languages.put(r.getLanguage().getCode(), r.getLanguage().getCode());
+            }
+            r.getOccurrences().forEach(o -> {
+                o.getTranslationStrings().forEach(ts -> {
+                    ts.getTranslations().forEach(t -> {
+                        if (!languages.containsKey(t.getLangCode())) {
+                            languages.put(t.getLangCode(), t.getLangCode());
+                        }
+                    });
+                });
+            });
+        });
+
+        return languages;
+    }
+
 
 
     // GETTERS & SETTERS
