@@ -1629,6 +1629,456 @@
               "translation": "OK, Got it"
             }
           ]
+        },
+        {
+          "stringOrig": "Search version 2 - Test",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(1) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Search version 2 - Test"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Find Climbers",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(2) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Find Climbers"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Advanced Search",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Advanced Search"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Search Guides",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(1) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Search Guides"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Browse Guides",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(2) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Browse Guides"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Search Maps of Routes",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(4) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Search Maps of Routes"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Browse Maps of Routes",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(5) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Browse Maps of Routes"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Routes Search",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(7) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Routes Search"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Browse Routes",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(8) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Browse Routes"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Recent Routes",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(9) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Recent Routes"
+            }
+          ]
+        },
+        {
+          "stringOrig": "My Routes",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(4) \u003e ul \u003e li:nth-child(1) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "My Routes"
+            }
+          ]
+        },
+        {
+          "stringOrig": "My Maps of Routes",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(4) \u003e ul \u003e li:nth-child(2) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "My Maps of Routes"
+            }
+          ]
+        },
+        {
+          "stringOrig": "My Guides",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mleft:nth-child(5) \u003e ul \u003e li \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "My Guides"
+            }
+          ]
+        },
+        {
+          "stringOrig": "What\u0027s in your Cart",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mright.inliner \u003e ul.ap_to_right \u003e li.mright.inliner:nth-child(3) \u003e ul \u003e li:nth-child(1) \u003e div.in \u003e div:nth-child(1) \u003e strong \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "What\u0027s in your Cart"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Your orders",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(1) \u003e div \u003e nav \u003e ul \u003e li.mright.inliner \u003e ul.ap_to_right \u003e li.mright.inliner:nth-child(3) \u003e ul \u003e li:nth-child(2) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Your orders"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Online \u0026 Offline tools for Climbers and Guide Publishers",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div.splash_header_image \u003e div.shi_center \u003e p",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Online \u0026 Offline tools for Climbers and Guide Publishers"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Climb",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e h2.pt10.slides_pager \u003e a.slide_link:nth-child(1)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Climb"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Track",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e h2.pt10.slides_pager \u003e a.slide_link:nth-child(2)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Track"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Publish",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e h2.pt10.slides_pager \u003e a.slide_link:nth-child(3)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Publish"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Find unknown routes. Discover new routes, sectors, areas, climbers, get inspired and meet new climbing experience. Join us and find new possibilities.",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div:nth-child(4) \u003e ul \u003e li:nth-child(1) \u003e div.slide_description \u003e div.splash_desc \u003e p",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Find unknown routes. Discover new routes, sectors, areas, climbers, get inspired and meet new climbing experience. Join us and find new possibilities."
+            }
+          ]
+        },
+        {
+          "stringOrig": "We simplify climb tracking and with your help we create public database of climbing routes. For routes, Maps of routes and Guides.",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div:nth-child(4) \u003e ul \u003e li:nth-child(2) \u003e div.slide_description \u003e div.splash_desc \u003e p",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "We simplify climb tracking and with your help we create public database of climbing routes. For routes, Maps of routes and Guides."
+            }
+          ]
+        },
+        {
+          "stringOrig": "With our tools, it\u0027s easy to create \u0026 share your routes, Maps of routes and Guides. Everything has address, that can be shared. Join us.",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div:nth-child(4) \u003e ul \u003e li:nth-child(3) \u003e div.slide_description \u003e div.splash_desc \u003e p",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "With our tools, it\u0027s easy to create \u0026 share your routes, Maps of routes and Guides. Everything has address, that can be shared. Join us."
+            }
+          ]
+        },
+        {
+          "stringOrig": "Climber\u0027s Routes mobile app Digital climbing in your pocket",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div.rounded.contentbox.in \u003e div.mobile_app \u003e p",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Climber\u0027s Routes mobile app Digital climbing in your pocket"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Find your route and climb it. After joining us you track your climb and share it. Find new climbers.",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div.rounded.contentbox.in \u003e div.columns2 \u003e p:nth-child(2)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Find your route and climb it. After joining us you track your climb and share it. Find new climbers."
+            }
+          ]
+        },
+        {
+          "stringOrig": "Find and study new line in Maps of routes. And climb it. Take a picture of what you climbed and mark your line on it. And it would be you who introduces to the world in new Map of routes.",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div.rounded.contentbox.in \u003e div.columns2 \u003e p:nth-child(3)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Find and study new line in Maps of routes. And climb it. Take a picture of what you climbed and mark your line on it. And it would be you who introduces to the world in new Map of routes."
+            }
+          ]
+        },
+        {
+          "stringOrig": "Put your climbs on your blog or page. Monitor your stats. Improve. You have so many Maps of routes, that you decide to create and sell your climbing Guide.",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div.rounded.contentbox.in \u003e div.columns2 \u003e p:nth-child(4)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Put your climbs on your blog or page. Monitor your stats. Improve. You have so many Maps of routes, that you decide to create and sell your climbing Guide."
+            }
+          ]
+        },
+        {
+          "stringOrig": "We want to be site where climbers build open database of climbing routes by sharing routes they climbed. Join us now.",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div.rounded.contentbox.in \u003e div.columns2 \u003e p:nth-child(6)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "We want to be site where climbers build open database of climbing routes by sharing routes they climbed. Join us now."
+            }
+          ]
+        },
+        {
+          "stringOrig": "See our News to see what\u0027s new. Follow us on Facebook, Google and Twitter. Get support on social networks or contact us directly. Share link to this project to help us.",
+          "selector": "html \u003e body \u003e div:nth-child(2) \u003e div:nth-child(2) \u003e div.rounded_bottom.splash \u003e div \u003e div.rounded.contentbox.in \u003e div.columns2 \u003e p:nth-child(8)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "See our News to see what\u0027s new. Follow us on Facebook, Google and Twitter. Get support on social networks or contact us directly. Share link to this project to help us."
+            }
+          ]
+        },
+        {
+          "stringOrig": "Terms and Conditions",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(1) \u003e ul \u003e li:nth-child(1) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Terms and Conditions"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Contact",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(1) \u003e ul \u003e li:nth-child(2) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Contact"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Partnership",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(1) \u003e ul \u003e li:nth-child(3) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Partnership"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Search Widget",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(2) \u003e ul \u003e li:nth-child(1) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Search Widget"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Wiki",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(2) \u003e ul \u003e li:nth-child(2) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Wiki"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Report a bug",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(2) \u003e ul \u003e li:nth-child(3) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Report a bug"
+            }
+          ]
+        },
+        {
+          "stringOrig": "News",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(1) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "News"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Facebook",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(2) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Facebook"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Google+",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(3) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Google+"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Twitter",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(3) \u003e ul \u003e li:nth-child(4) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Twitter"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Subscribe",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(4) \u003e ul \u003e li:nth-child(1) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Subscribe"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Unsubscribe",
+          "selector": "html \u003e body \u003e div.rounded \u003e ul.paticka \u003e li:nth-child(4) \u003e ul \u003e li:nth-child(2) \u003e a",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Unsubscribe"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Marcel Zúbrik",
+          "selector": "html \u003e body \u003e div.rounded \u003e div.paticka \u003e a:nth-child(1)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Marcel Zúbrik"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Tomáš Zúbrik",
+          "selector": "html \u003e body \u003e div.rounded \u003e div.paticka \u003e a:nth-child(2)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Tomáš Zúbrik"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Whian.net",
+          "selector": "html \u003e body \u003e div.rounded \u003e div.paticka \u003e a:nth-child(4)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Whian.net"
+            }
+          ]
+        },
+        {
+          "stringOrig": "mariachily",
+          "selector": "html \u003e body \u003e div.rounded \u003e div.paticka \u003e a:nth-child(5)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "mariachily"
+            }
+          ]
+        },
+        {
+          "stringOrig": "CC",
+          "selector": "html \u003e body \u003e div.rounded \u003e div.paticka \u003e a:nth-child(6)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "CC"
+            }
+          ]
         }
       ]
     },
@@ -1709,13 +2159,33 @@
               "translation": "Tomáš Zúbrik"
             }
           ]
+        },
+        {
+          "stringOrig": "MacO\u0027s creative workshop",
+          "selector": "html \u003e body \u003e div.rounded \u003e div.paticka \u003e a:nth-child(1)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "MacO\u0027s creative workshop"
+            }
+          ]
+        },
+        {
+          "stringOrig": "Tomáš Zúbrik",
+          "selector": "html \u003e body \u003e div.rounded \u003e div.paticka \u003e a:nth-child(2)",
+          "translations": [
+            {
+              "langCode": "sk",
+              "translation": "Tomáš Zúbrik"
+            }
+          ]
         }
       ]
     }
   ],
   "config": {
     "source": "/Users/marthol/IdeaProjects/MavenBased/jamlin/testdata/jamlin_demo-en.html",
-    "timestamp": "Jan 2, 2018 11:41:59 AM",
+    "timestamp": "Jan 2, 2018, 11:41:59 AM",
     "selectors": [
       {
         "name": "texts",
@@ -1731,7 +2201,8 @@
     ],
     "language": {
       "code": "en",
-      "lang": "en"
+      "lang": "en",
+      "name": ""
     },
     "target": {
       "saveHistory": true,

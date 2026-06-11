@@ -44,34 +44,32 @@ public class Language {
      * @return Locale
      */
     private Locale processCode(String code) {
-        if ( !code.trim().isEmpty() ) {
-            String[] codes = code.split("_");
-            Locale lang = null;
-            switch (codes.length) {
-                case 3:
-                    lang = new Locale(codes[0], codes[1], codes[2]);
-                    break;
-                case 2:
-                    lang = new Locale(codes[0], codes[1]);
-                    break;
-                case 1:
-                    lang = new Locale(code);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid locale: " + code);
-            }
-            if (!lang.toString().isEmpty()) {
-                if (isValid(lang)) {
-                    return lang;
-                }
-            }
+        if (code == null || code.trim().isEmpty()) {
+            return null;
+        }
+        String trimmed = code.trim();
+        if (!trimmed.matches("^[a-zA-Z]{2,3}(_[a-zA-Z0-9]+)*$")) {
+            return null;
+        }
+        Locale lang = Locale.forLanguageTag(trimmed.replace('_', '-'));
+        if (!lang.getLanguage().isEmpty() && isValid(lang)) {
+            return lang;
         }
         return null;
     }
 
     private boolean isValid(Locale locale) {
         try {
-            return locale.getISO3Language() != null && locale.getISO3Country() != null;
+            String iso3Language = locale.getISO3Language();
+            if (iso3Language == null || iso3Language.isEmpty()) {
+                return false;
+            }
+            // Language-only codes (e.g. "en", "sk") have no country component
+            if (locale.getCountry() == null || locale.getCountry().isEmpty()) {
+                return true;
+            }
+            String iso3Country = locale.getISO3Country();
+            return iso3Country != null && !iso3Country.isEmpty();
         } catch (MissingResourceException e) {
             return false;
         }
@@ -110,7 +108,16 @@ public class Language {
      * @return boolean
      */
     boolean equalsInValues(Language secondLanguage) {
-        return (this.getCode().equals(secondLanguage.getCode()) && this.getLang().equals(secondLanguage.getLang()) );
+        if (secondLanguage == null) {
+            return false;
+        }
+        if (!this.getCode().equals(secondLanguage.getCode())) {
+            return false;
+        }
+        if (this.getLang() == null) {
+            return secondLanguage.getLang() == null;
+        }
+        return this.getLang().equals(secondLanguage.getLang());
     }
 
 

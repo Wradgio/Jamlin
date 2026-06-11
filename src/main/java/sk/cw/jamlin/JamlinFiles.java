@@ -2,6 +2,8 @@ package sk.cw.jamlin;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -20,15 +22,144 @@ import java.util.*;
  */
 public class JamlinFiles {
 
-    protected static int extractedFilesCount = 0;
+    private static final Logger log = LoggerFactory.getLogger(JamlinFiles.class);
+
+    static List<String> collectConfiguredSourceFiles(String workingDirectory, Config config) {
+        LinkedHashSet<String> files = new LinkedHashSet<>();
+        List<String> extensions = collectExtensions(config);
+        boolean listedFromDirectories = false;
+
+        for (IConfigSourceFilter source : config.getSources().getDirectories()) {
+            ConfigSourceFilterDirectory dirConfig = (ConfigSourceFilterDirectory) source;
+            String path = dirConfig.getPath();
+            if (path != null && !path.trim().isEmpty()) {
+                listedFromDirectories = true;
+                List<String> dirExtensions = dirConfig.getExtensions().isEmpty() ? extensions : dirConfig.getExtensions();
+                boolean traverse = Boolean.TRUE.equals(dirConfig.getTraverse());
+                files.addAll(listValidFiles(new File(workingDirectory + File.separator + path), dirExtensions, traverse));
+            }
+        }
+
+        for (IConfigSourceFilter source : config.getSources().getFiles()) {
+            files.addAll(listFilesMatchingGlob(workingDirectory, source.getPath()));
+        }
+
+        if (!listedFromDirectories && files.isEmpty()) {
+            files.addAll(listValidFiles(new File(workingDirectory), extensions, getDirectoryTraverse(config)));
+        }
+
+        return new ArrayList<>(files);
+    }
+
+    static List<String> collectExtensions(Config config) {
+        LinkedHashSet<String> extensions = new LinkedHashSet<>();
+        for (IConfigSourceFilter source : config.getSources().getDirectories()) {
+            ConfigSourceFilterDirectory dir = (ConfigSourceFilterDirectory) source;
+            extensions.addAll(dir.getExtensions());
+        }
+        if (extensions.isEmpty()) {
+            extensions.add("html");
+        }
+        return new ArrayList<>(extensions);
+    }
+
+    static boolean getDirectoryTraverse(Config config) {
+        if (config.getSources().getDirectories().size() > 0) {
+            ConfigSourceFilterDirectory dir = (ConfigSourceFilterDirectory) config.getSources().getDirectories().get(0);
+            return Boolean.TRUE.equals(dir.getTraverse());
+        }
+        return true;
+    }
+
+    static List<String> listFilesMatchingGlob(String workingDirectory, String pattern) {
+        if (pattern == null || pattern.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        String normalizedPattern = pattern.replace('\\', '/');
+        int slashIndex = normalizedPattern.lastIndexOf('/');
+        File searchRoot;
+        String fileGlob;
+        if (slashIndex >= 0) {
+            searchRoot = new File(workingDirectory, normalizedPattern.substring(0, slashIndex));
+            fileGlob = normalizedPattern.substring(slashIndex + 1);
+        } else {
+            searchRoot = new File(workingDirectory);
+            fileGlob = normalizedPattern;
+        }
+
+        if (!searchRoot.isDirectory()) {
+            return Collections.emptyList();
+        }
+
+        String fileRegex = globToRegex(fileGlob);
+        List<String> matches = new ArrayList<>();
+        File[] children = searchRoot.listFiles();
+        if (children == null) {
+            return matches;
+        }
+
+        for (File child : children) {
+            if (child.isFile() && !child.getName().contains(".jamlin_history") && child.getName().matches(fileRegex)) {
+                matches.add(child.getAbsolutePath());
+            }
+        }
+        return matches;
+    }
+
+    static boolean matchesGlobPath(String pattern, String relativePath) {
+        if (pattern == null || relativePath == null) {
+            return false;
+        }
+        return relativePath.replace('\\', '/').matches(globToRegex(pattern.replace('\\', '/')));
+    }
+
+    static String toRelativePath(String absolutePath, String workingDirectory) {
+        String sourcePath = new File(absolutePath).getAbsolutePath();
+        String workPath = new File(workingDirectory).getAbsolutePath();
+        if (!workPath.endsWith(File.separator)) {
+            workPath = workPath + File.separator;
+        }
+        if (sourcePath.startsWith(workPath)) {
+            return sourcePath.substring(workPath.length()).replace(File.separatorChar, '/');
+        }
+        return new File(absolutePath).getName();
+    }
+
+    private static String globToRegex(String glob) {
+        StringBuilder regex = new StringBuilder("^");
+        for (int i = 0; i < glob.length(); i++) {
+            char c = glob.charAt(i);
+            switch (c) {
+                case '*':
+                    regex.append(".*");
+                    break;
+                case '?':
+                    regex.append('.');
+                    break;
+                default:
+                    if (".\\[]{}()+-^$|".indexOf(c) >= 0) {
+                        regex.append('\\');
+                    }
+                    regex.append(c);
+                    break;
+            }
+        }
+        regex.append('$');
+        return regex.toString();
+    }
 
     // browse files
     static List<String> listValidFiles(File dir, List<String> extensions) {
-        List<String> resultFiles = new ArrayList<>();
-        return listValidFiles(dir, 0, extensions, resultFiles);
+        return listValidFiles(dir, extensions, true);
     }
 
-    private static List<String> listValidFiles(File dir, int level, List<String> extensions, List<String> resultFiles) { //
+    static List<String> listValidFiles(File dir, List<String> extensions, boolean traverse) {
+        List<String> resultFiles = new ArrayList<>();
+        return listValidFiles(dir, extensions, traverse, resultFiles);
+    }
+
+    private static List<String> listValidFiles(File dir, List<String> extensions, boolean traverse, List<String> resultFiles) {
         if (dir.isDirectory()) {
             String[] children = dir.list();
             if (children!=null) {
@@ -37,7 +168,9 @@ public class JamlinFiles {
                         String fileExtension = getFileExtension(children[i]);
                         File item = new File(dir, children[i]);
                         if (item.isDirectory()) {
-                            listValidFiles(item, level, extensions, resultFiles);
+                            if (traverse) {
+                                listValidFiles(item, extensions, traverse, resultFiles);
+                            }
                         } else if (extensions.contains(fileExtension)) {
                             resultFiles.add(item.toString());
                         }
@@ -58,7 +191,7 @@ public class JamlinFiles {
      * @param source File
      * @param translation Translation
      */
-    static void outputExtractResultFile(TranslationExtractResult input, File source, Translation translation) {
+    static void outputExtractResultFile(JamlinRunContext context, TranslationExtractResult input, File source, Translation translation) {
         String fileName = "";
         String fileExtension = "";
 
@@ -70,8 +203,8 @@ public class JamlinFiles {
                 fileName = fileName.substring(0, fileName.lastIndexOf('.'));
             }
         } catch (Exception e) {
-            System.out.println("outputExtractResultFile fileName: ");
-            System.out.println(e.getMessage());
+            log.error("Failed to resolve extract output file name", e);
+            context.markFailed();
         }
 
         // set language code from translation
@@ -104,7 +237,8 @@ public class JamlinFiles {
             try {
                 oldResultInput = new String( java.nio.file.Files.readAllBytes(Paths.get(oldResultFilePath)), StandardCharsets.UTF_8 );
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Failed to read existing extract file: {}", oldResultFilePath, e);
+                context.markFailed();
             }
             TranslationExtractResult oldResult = null;
             if (!oldResultInput.isEmpty()) {
@@ -112,8 +246,8 @@ public class JamlinFiles {
                 try {
                     oldResult = gsonOld.fromJson(oldResultInput, TranslationExtractResult.class);
                 } catch (Exception e) {
-                    System.out.println("outputExtractResultFile oldResult: ");
-                    System.out.println(e.getMessage());
+                    log.error("Failed to parse existing extract file: {}", oldResultFilePath, e);
+                    context.markFailed();
                 }
             }
 
@@ -124,16 +258,15 @@ public class JamlinFiles {
         }
 
         // save history
-        if ( Main.config.getTarget().getSaveHistory() ) {
-            JamlinFiles.makeHistory(Main.startupTimestamp, source);
+        if (context.getConfig().getTarget().getSaveHistory()) {
+            makeHistory(context.getStartupTimestamp(), source);
         }
 
-        // if Dictionary, add record - extractDictionary is cleared later in JamlinFiles.writeExtractDictionary()
-        if (Main.action.equals(Main.actions.EXTRACT.toString().toLowerCase()) && Main.dictionary && Main.extractDictionary!=null) {
-            Main.extractDictionary.addRecords(translation.getLanguage(), source.getPath(), extractResult);
+        // if Dictionary, add record - extractDictionary is cleared later in writeExtractDictionary()
+        if (context.isExtractAction() && context.isDictionary() && context.getExtractDictionary() != null) {
+            context.getExtractDictionary().addRecords(translation.getLanguage(), source.getPath(), extractResult);
         } else {
-            // if -extract.json file, write it
-            writeResultFile(source.getParentFile(), fileName, extractResult.resultToJson());
+            writeResultFile(context, source.getParentFile(), fileName, extractResult.resultToJson());
         }
     }
 
@@ -143,7 +276,7 @@ public class JamlinFiles {
      * @param results TranslationReplaceResult
      * @param destination String
      */
-    static void outputReplaceResultFiles(TranslationReplaceResult results, String destination) {
+    static void outputReplaceResultFiles(JamlinRunContext context, TranslationReplaceResult results, String destination) {
         Map<String, String> resultFileNames = new HashMap<>();
 
         resultFileNames = getReplaceOutputFileName(results, destination);
@@ -157,10 +290,11 @@ public class JamlinFiles {
             for (int j=0; j<results.getLangCodes().size(); j++) {
                 String langCode = results.getLangCodes().get(j);
                 // save history
-                if ( Main.config.getTarget().getSaveHistory() ) {
-                    JamlinFiles.makeHistory(Main.startupTimestamp, new File(destinationDirectory +File.separator+ resultFileNames.get(langCode)) );
+                if (context.getConfig().getTarget().getSaveHistory()) {
+                    makeHistory(context.getStartupTimestamp(),
+                            new File(destinationDirectory + File.separator + resultFileNames.get(langCode)));
                 }
-                writeResultFile(destinationDirectory, resultFileNames.get(langCode), results.get(langCode));
+                writeResultFile(context, destinationDirectory, resultFileNames.get(langCode), results.get(langCode));
             }
         }
     }
@@ -189,8 +323,7 @@ public class JamlinFiles {
                     fileName = fileName.substring(0, fileName.lastIndexOf('.'));
                 }
             } catch (Exception e) {
-                System.out.println("getReplaceOutputFileName: ");
-                System.out.println(e.getMessage());
+                log.error("Failed to resolve replace output file name", e);
             }
         }
 
@@ -254,24 +387,25 @@ public class JamlinFiles {
      * @param fileName String
      * @param resultContent String
      */
-    private static void writeResultFile(File destination, String fileName, String resultContent) {
+    private static void writeResultFile(JamlinRunContext context, File destination, String fileName, String resultContent) {
         FileWriter locFile = null;
         try {
-            locFile = new FileWriter(destination.toString()+ File.separator+ fileName);
+            locFile = new FileWriter(destination.toString() + File.separator + fileName);
             locFile.write(resultContent);
-        } catch(IOException e) {
-            System.out.println("Write error for: "+fileName);
-            e.printStackTrace();
+        } catch (IOException e) {
+            log.error("Write error for: {}", fileName, e);
+            context.markFailed();
         } finally {
             try {
-                if(locFile != null) {
+                if (locFile != null) {
                     locFile.close();
                 }
-                Main.exportedFilesCount ++;
-                System.out.println("Exported #"+ Main.exportedFilesCount+ ": "+ destination.toString()+ File.separator+ fileName);
-            } catch(IOException e) {
-                System.out.println("Close error for: "+fileName);
-                e.printStackTrace();
+                context.incrementExportedFilesCount();
+                log.info("Exported #{}: {}{}{}", context.getExportedFilesCount(),
+                        destination, File.separator, fileName);
+            } catch (IOException e) {
+                log.error("Close error for: {}", fileName, e);
+                context.markFailed();
             }
         }
     }
@@ -304,21 +438,28 @@ public class JamlinFiles {
      * @param resultFiles List<String>
      * @return int
      */
-    static int getExpectedFilesCount(String action, String mode, List<String> resultFiles) {
-        List<String> usedNames = new ArrayList<String>();
-
-        if (resultFiles!=null && resultFiles.size()>0) {
-            for (int i = 0; i < resultFiles.size(); i++) {
-                //mode replace automatic
-                if ( action!=null && action.equals(Main.actions.REPLACE.toString().toLowerCase()) ) {
-                    if ( mode!=null && mode.equals("automatic") ) {
-                        /*if ( resultFiles.get(i).indexOf('-extract.json') ) {
-
-                        }*/
-                    }
-                }
-            }
+    static int getExpectedFilesCount(JamlinAction action, String mode, List<String> resultFiles, boolean dictionary) {
+        if (action == null) {
+            action = JamlinAction.EXTRACT;
         }
+
+        if (action == JamlinAction.EXTRACT) {
+            if (dictionary) {
+                return 1;
+            }
+            if ("specific".equals(mode)) {
+                return 1;
+            }
+            return resultFiles == null ? 0 : resultFiles.size();
+        }
+
+        if (action == JamlinAction.REPLACE) {
+            if ("specific".equals(mode)) {
+                return 1;
+            }
+            return resultFiles == null ? 0 : Math.max(resultFiles.size(), 1);
+        }
+
         return 1;
     }
 
@@ -348,26 +489,25 @@ public class JamlinFiles {
                     try {
                         java.nio.file.Files.createDirectories(destinationHistoryFolder.toPath());
                     } catch (IOException exception) {
-                        System.out.println("Cannot create directories: "+exception.getMessage());
+                        log.error("Cannot create history directories", exception);
                     }
                 }
 
                 if ( destinationHistoryFolder.exists() ) {
                     File destinationFile = new File(destinationHistoryFolder.toString() +File.separator+ origFile.getName());
-                    System.out.println(destinationFile.toString());
                     try {
-                        System.out.println("Copy of: " +origFile.toPath()+ " into: " +destinationFile.toPath());
+                        log.debug("Copy of {} into {}", origFile.toPath(), destinationFile.toPath());
                         java.nio.file.Files.copy(origFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException exception) {
-                        System.out.println("Cannot copy file: "+exception.getMessage());
+                        log.error("Cannot copy file to history", exception);
                     }
                 }
             } else {
-                System.out.println("No datestrings");
+                log.warn("Could not parse history timestamp");
             }
 
         } else {
-            System.out.println("Missing parameters.");
+            log.warn("Missing parameters for history backup");
         }
         return null;
     }
@@ -377,36 +517,34 @@ public class JamlinFiles {
      *
      * @param extractDictionary TranslationExtractDictionary
      */
-    static void writeExtractDictionary( TranslationExtractDictionary extractDictionary ) {
-        // get path of extractDictionary file
-        File target = new File(Main.workingDirectory + File.separator + "project_dictionary.json");
-        if ( target.exists() ) {
-            // before delete, merge translations from old dictionary with latest
+    static void writeExtractDictionary(JamlinRunContext context) {
+        TranslationExtractDictionary extractDictionary = context.getExtractDictionary();
+        File target = new File(context.getWorkingDirectory() + File.separator + "project_dictionary.json");
+        if (target.exists()) {
             extractDictionary = mergeDictionaryVersions(extractDictionary, target);
             target.delete();
         }
-        // if not created, create it and write start
-        if ( !target.exists() ) {
+        if (!target.exists()) {
             FileWriter locFile = null;
             try {
                 locFile = new FileWriter(target.getPath());
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                TranslationExtractDictionaryFileWrap fileWrap = new TranslationExtractDictionaryFileWrap(Main.workingDirectory, extractDictionary);
-//                locFile.write("{\"path\":\"" +Main.workingDirectory+ "\",\"dictionary\":" +gson.toJson(Main.extractDictionary)+ "}");
-                locFile.write( gson.toJson(fileWrap) );
-            } catch(IOException e) {
-                System.out.println("Write error for project_dictionary.json intro");
-                e.printStackTrace();
+                TranslationExtractDictionaryFileWrap fileWrap = new TranslationExtractDictionaryFileWrap(
+                        context.getWorkingDirectory(), extractDictionary);
+                locFile.write(gson.toJson(fileWrap));
+            } catch (IOException e) {
+                log.error("Write error for project_dictionary.json", e);
+                context.markFailed();
             } finally {
                 try {
-                    if(locFile != null) {
+                    if (locFile != null) {
                         locFile.close();
                     }
-                    extractedFilesCount++;
-                    System.out.println("Extracted #"+ extractedFilesCount+ ": "+ target.toString());
-                } catch(IOException e) {
-                    System.out.println("Close error for project_dictionary.json");
-                    e.printStackTrace();
+                    context.incrementExportedFilesCount();
+                    log.info("Extracted #{}: {}", context.getExportedFilesCount(), target);
+                } catch (IOException e) {
+                    log.error("Close error for project_dictionary.json", e);
+                    context.markFailed();
                 }
             }
         }
@@ -426,15 +564,14 @@ public class JamlinFiles {
         try {
             oldResultInput = new String( java.nio.file.Files.readAllBytes(Paths.get(target.getPath())), StandardCharsets.UTF_8 );
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Failed to read existing project dictionary", e);
         }
         // then try to convert JSON into dictionary wrap object
         try {
             Gson gsonOld = new Gson();
             oldDictionary = gsonOld.fromJson(oldResultInput, TranslationExtractDictionaryFileWrap.class);
         } catch (Exception e) {
-            System.out.println("replaceStrings: ");
-            System.out.println(e.getMessage());
+            log.error("Failed to parse existing project dictionary", e);
         }
 
         // if old dictionary exists, merge it with new one

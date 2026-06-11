@@ -2,6 +2,8 @@ package sk.cw.jamlin;
 
 import com.google.gson.Gson;
 import org.jsoup.Jsoup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
@@ -14,6 +16,8 @@ import java.util.Map;
  * Created by marthol on 21.09.17.
  */
 public class Translation {
+
+    private static final Logger log = LoggerFactory.getLogger(Translation.class);
 
     private TranslationConfig config;
     private String translateAction;
@@ -77,10 +81,7 @@ public class Translation {
                 Elements selectorResult = doc.select(selector);
 
                 TranslationBlock translationBlock;
-                if (filter.trim().equals("")) {
-                    // ToDo - check if after regEx filter applied, string is not empty
-                    translationBlock = new TranslationBlock(selectorName, selector, selectorType, selectorAttrName);
-                } else if (selectorType.equals(TranslationBlock.types.ATTRIBUTE.toString().toLowerCase()) && !selectorAttrName.trim().equals("")) {
+                if (selectorType.equals(TranslationBlock.types.ATTRIBUTE.toString().toLowerCase()) && !selectorAttrName.trim().isEmpty()) {
                     translationBlock = new TranslationBlock(selectorName, selector, selectorType, selectorAttrName);
                 } else {
                     translationBlock = new TranslationBlock(selectorName, selector, selectorType);
@@ -88,21 +89,18 @@ public class Translation {
 
                 // adding translation strings according to type
                 for (int j=0; j<selectorResult.size(); j++) {
-                    int translationStringId = -1;
                     if (language==null || language.getCode().trim().isEmpty()) {
                         language = new Language("xx");
                     }
-                    if (selectorType.equals(TranslationBlock.types.ATTRIBUTE.toString().toLowerCase()) && !selectorAttrName.trim().equals("")) {
-                        // adding translation string from html tag attribute
-                        translationStringId = translationBlock.addTranslationString(selectorResult.get(j).attr(selectorAttrName), selectorResult.get(j).cssSelector(), language.getCode(), selectorResult.get(j).attr(selectorAttrName));
-                    } else if (selectorType.equals("value")) {
-                        // adding translation string from html tag value (input, textarea, ...)
-                        translationStringId = translationBlock.addTranslationString(selectorResult.get(j).val(), selectorResult.get(j).cssSelector(), language.getCode(), selectorResult.get(j).val());
-                    } else {
-                        // adding translation string from text inside tag's opening and closing
-                        translationStringId = translationBlock.addTranslationString(selectorResult.get(j).text(), selectorResult.get(j).cssSelector(), language.getCode(), selectorResult.get(j).text());
+                    String extractedValue = getExtractedValue(selectorResult, j, selectorType, selectorAttrName);
+                    if (!passesFilter(extractedValue, filter)) {
+                        continue;
                     }
-
+                    translationBlock.addTranslationString(
+                            extractedValue,
+                            selectorResult.get(j).cssSelector(),
+                            language.getCode(),
+                            extractedValue);
                 }
                 translationExtractResult.addTranslationBlock(translationBlock);
             }
@@ -110,10 +108,8 @@ public class Translation {
             // now we have result with all translates - time to export them to json output
 
             return translationExtractResult;//.resultToJson();
-        } catch (Exception $e) {
-            System.out.println("extractStrings: ");
-            System.out.println($e.getMessage());
-            $e.printStackTrace();
+        } catch (Exception e) {
+            log.error("Failed to extract strings", e);
         }
 
         return translationExtractResult;
@@ -126,7 +122,7 @@ public class Translation {
      * @param target String
      * @return TranslationReplaceResult
      */
-    TranslationReplaceResult replaceStrings(String extractedJson, String target) {
+    TranslationReplaceResult replaceStrings(String extractedJson, String target, JamlinRunContext context) {
         this.translateAction = translateActions.REPLACE.toString().toLowerCase();
         extractedJson = extractedJson.trim();
         Gson gson = new Gson();
@@ -134,8 +130,10 @@ public class Translation {
         try {
             extractResult = gson.fromJson(extractedJson, TranslationExtractResult.class);
         } catch (Exception e) {
-            System.out.println("replaceStrings: ");
-            System.out.println(e.getMessage());
+            log.error("Failed to parse extract JSON for replace", e);
+            if (context != null) {
+                context.markFailed();
+            }
         }
 
         List<String> langCodes = new ArrayList<>();
@@ -156,8 +154,8 @@ public class Translation {
                 }
             }
         }
-        if ( langCodes!=null ) {
-            Main.expectedFilesCount = Main.expectedFilesCount * langCodes.size();
+        if (context != null && langCodes != null) {
+            context.multiplyExpectedFilesCount(langCodes.size());
         }
 
         //doc = Jsoup.parse(target, "UTF-8");
@@ -208,7 +206,8 @@ public class Translation {
         // prepare file replace pattern as set by config
         TranslationReplaceResult result = null;
         result = new TranslationReplaceResult(docs, langCodes);
-        if ( this.config.getTarget().getSaveHistory() ) {
+        if (this.config.getTarget().getReplacePattern() != null
+                && !this.config.getTarget().getReplacePattern().isEmpty()) {
             result.setTargetPattern(this.config.getTarget().getReplacePattern());
         }
 
@@ -229,5 +228,26 @@ public class Translation {
 
     public void setLanguage(Language language) {
         this.language = language;
+    }
+
+
+    private static String getExtractedValue(Elements elements, int index, String selectorType, String selectorAttrName) {
+        if (selectorType.equals(TranslationBlock.types.ATTRIBUTE.toString().toLowerCase()) && !selectorAttrName.trim().isEmpty()) {
+            return elements.get(index).attr(selectorAttrName);
+        } else if (selectorType.equals(TranslationBlock.types.VALUE.toString().toLowerCase())) {
+            return elements.get(index).val();
+        }
+        return elements.get(index).text();
+    }
+
+
+    private static boolean passesFilter(String value, String filter) {
+        if (value == null || value.trim().isEmpty()) {
+            return false;
+        }
+        if (filter == null || filter.trim().isEmpty()) {
+            return true;
+        }
+        return value.matches(filter);
     }
 }

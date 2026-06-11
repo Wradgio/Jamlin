@@ -12,8 +12,70 @@ For projects that use static HTML or XML that need to be translated and keep unt
 
 ## Quick start
 1. In project root, find **jamlin_config.json** file - copy it to your destination folder and edit CSS selectors to extract what you need (see Config section for more info).
-2. Find **jamlin-jar-with-dependencies.jar** inside **target** directory - this one is latest bundled build. Copy it to your destination folder, next to jamlin_config.json file. It can't run without it.
+2. Build the project (see [Building and testing](#building-and-testing)) or find **jamlin-jar-with-dependencies.jar** inside the **target** directory. Copy the JAR to your destination folder, next to `jamlin_config.json`. It can't run without it.
 3. Run as any other Java program using terminal (`java -jar jamlin-jar-with-dependencies.jar`) as described in next sections using any of 6 defined modes.
+
+
+## Building and testing
+
+### Prerequisites
+
+* **Java 17** or newer (JDK)
+* **Apache Maven 3.6+**
+
+### Build
+
+From the project root:
+
+```bash
+mvn clean package
+```
+
+This compiles the project, runs all tests, and produces two JAR files in `target/`:
+
+| File | Description |
+|------|-------------|
+| `jamlin.jar` | Application JAR (dependencies not included) |
+| `jamlin-jar-with-dependencies.jar` | Fat JAR with all dependencies — use this to run JaMLin |
+
+### Test
+
+Run the test suite only:
+
+```bash
+mvn test
+```
+
+Run the same check as CI (tests + package):
+
+```bash
+mvn verify
+```
+
+Tests use sample data from the `testdata/` directory. A full `mvn clean package` runs tests automatically before packaging.
+
+### Continuous integration
+
+GitHub Actions workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs `mvn verify` on push and pull requests to `main`/`master` using JDK 17.
+
+### Run the built JAR
+
+Example using the included test data:
+
+```bash
+cd testdata
+java -jar ../target/jamlin-jar-with-dependencies.jar --action extract --source jamlin_demo.html --language sk
+```
+
+Additional CLI options:
+
+* `--workingdir` / `-w` — set working directory (defaults to current directory)
+* `--config` / `-c` — path to config file (defaults to `jamlin_config.json` in working directory)
+* `--dictionary` / `-d` — build project dictionary on extract (default: `true`)
+
+Exit codes: `0` success, `1` error, `2` invalid arguments.
+
+For architecture notes and development history, see [info-base.md](./info-base.md).
 
 
 ## How it works
@@ -90,7 +152,14 @@ After you set it up, you can define parameters - action, source, target and lang
 JaMLin by default uses "extract" action to traverse defined items and trying to extract their translations. When run with "replace" action, it tries to get new translations back to its original files.
 
 ### Parameters
-JaMLin receives 4 parameters and works in 6 modes. Examples of using Jamlin looks like this:
+
+Show all options and examples:
+
+```bash
+java -jar jamlin-jar-with-dependencies.jar --help
+```
+
+JaMLin receives several CLI parameters and works in 6 modes. Examples of using Jamlin looks like this:
 
 `java -jar jamlin-jar-with-dependencies.jar
 	--action "extract"

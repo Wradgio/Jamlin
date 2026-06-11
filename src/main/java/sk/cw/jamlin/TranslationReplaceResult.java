@@ -26,7 +26,7 @@ public class TranslationReplaceResult {
 
     public void addResult(String name, Document result, String targetPattern) {
         results.put(name, result);
-        targetPattern = targetPattern;
+        this.targetPattern = targetPattern;
     }
 
     public Document getDocument(String key) {

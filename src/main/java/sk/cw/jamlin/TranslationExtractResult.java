@@ -64,7 +64,7 @@ public class TranslationExtractResult {
     private TranslationBlock getBlockBySelector(String selector) {
         if (getTranslationBlocks().size()>0) {
             for (int i=0; i<getTranslationBlocks().size(); i++) {
-                if ( getTranslationBlocks().get(i).getCssSelector()==selector ) {
+                if ( selector.equals(getTranslationBlocks().get(i).getCssSelector()) ) {
                     return getTranslationBlocks().get(i);
                 }
             }
