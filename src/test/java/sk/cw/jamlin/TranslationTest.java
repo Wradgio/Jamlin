@@ -8,10 +8,46 @@ import static org.junit.Assert.assertTrue;
 
 public class TranslationTest {
 
+    private static final String MULTILANG_EXTRACT_JSON = """
+            {
+              "translationBlocks": [
+                {
+                  "name": "texts",
+                  "cssSelector": "p, a",
+                  "type": "text",
+                  "attrName": "",
+                  "translationStrings": [
+                    {
+                      "stringOrig": "Menu",
+                      "selector": "#mobile_menu",
+                      "translations": [
+                        {"langCode": "en", "translation": "Menu EN"},
+                        {"langCode": "sk", "translation": "Menu SK"}
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+            """;
+
     private TranslationConfig baseConfig() {
         ConfigTarget target = new ConfigTarget(false, "*-$lang.*");
         TranslationConfig config = new TranslationConfig("sample.html", null, target);
         config.setLanguage(new Language("en"));
+        return config;
+    }
+
+    private TranslationConfig replaceConfig(String sourcePath, Language language) {
+        ConfigTarget target = new ConfigTarget(false, "*-$lang.*");
+        TranslationConfig config = new TranslationConfig(
+                sourcePath,
+                TestResources.path("jamlin_demo.html"),
+                target);
+        if (language != null) {
+            config.setLanguage(language);
+        }
+        config.selectors.add(new ConfigSourceFilterSelector("texts", "p, a", "text"));
         return config;
     }
 
@@ -49,47 +85,33 @@ public class TranslationTest {
 
     @Test
     public void replaceStrings_writesRequestedLanguage() throws Exception {
-        String extractJson = TestResources.read("jamlin_demo-extract.json");
         String templateHtml = TestResources.read("jamlin_demo.html");
-
-        ConfigTarget target = new ConfigTarget(false, "*-$lang.*");
-        TranslationConfig config = new TranslationConfig(
-                TestResources.path("jamlin_demo-extract.json"),
-                TestResources.path("jamlin_demo.html"),
-                target);
-        config.setLanguage(new Language("sk"));
-        config.selectors.add(new ConfigSourceFilterSelector("texts", "p, a", "text"));
+        TranslationConfig config = replaceConfig("sample-extract.json", new Language("sk"));
 
         JamlinRunContext context = new JamlinRunContext();
         context.setExpectedFilesCount(1);
 
         Translation translation = new Translation(config);
-        TranslationReplaceResult result = translation.replaceStrings(extractJson, templateHtml, context);
+        TranslationReplaceResult result = translation.replaceStrings(MULTILANG_EXTRACT_JSON, templateHtml, context);
 
         assertEquals(1, result.getLangCodes().size());
         assertEquals("sk", result.getLangCodes().get(0));
-        assertTrue(result.get("sk").contains("Menu"));
+        assertTrue(result.get("sk").contains("Menu SK"));
     }
 
     @Test
     public void replaceStrings_collectsAllLanguagesWhenNoneSpecified() throws Exception {
-        String extractJson = TestResources.read("jamlin_demo-extract.json");
         String templateHtml = TestResources.read("jamlin_demo.html");
-
-        ConfigTarget target = new ConfigTarget(false, "*-$lang.*");
-        TranslationConfig config = new TranslationConfig(
-                TestResources.path("jamlin_demo-extract.json"),
-                TestResources.path("jamlin_demo.html"),
-                target);
-        config.selectors.add(new ConfigSourceFilterSelector("texts", "p, a", "text"));
+        TranslationConfig config = replaceConfig("sample-extract.json", null);
 
         JamlinRunContext context = new JamlinRunContext();
         context.setExpectedFilesCount(1);
 
         Translation translation = new Translation(config);
-        TranslationReplaceResult result = translation.replaceStrings(extractJson, templateHtml, context);
+        TranslationReplaceResult result = translation.replaceStrings(MULTILANG_EXTRACT_JSON, templateHtml, context);
 
-        assertTrue(result.getLangCodes().size() >= 2);
-        assertFalse(result.getLangCodes().isEmpty());
+        assertEquals(2, result.getLangCodes().size());
+        assertTrue(result.getLangCodes().contains("en"));
+        assertTrue(result.getLangCodes().contains("sk"));
     }
 }

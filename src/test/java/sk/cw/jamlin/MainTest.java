@@ -60,7 +60,7 @@ public class MainTest {
     public void getFileTranslation_04_replace_specific() {
         CliOptions options = baseOptions();
         options.action = "replace";
-        options.source = "jamlin_demo-extract.json";
+        options.source = TestResources.path("fixtures/multilang-extract.json");
         options.target = "jamlin_demo.html";
         options.language = "sk";
 
@@ -74,7 +74,7 @@ public class MainTest {
     public void getFileTranslation_05_replace_semiautomatic() {
         CliOptions options = baseOptions();
         options.action = "replace";
-        options.source = "jamlin_demo-extract.json";
+        options.source = TestResources.path("fixtures/multilang-extract.json");
         options.target = "jamlin_demo.html";
 
         JamlinRunContext context = runJamlin(options);

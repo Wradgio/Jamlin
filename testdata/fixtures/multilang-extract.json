@@ -1,0 +1,30 @@
+{
+  "translationBlocks": [
+    {
+      "name": "texts",
+      "cssSelector": "p, a",
+      "type": "text",
+      "attrName": "",
+      "translationStrings": [
+        {
+          "stringOrig": "Menu",
+          "selector": "#mobile_menu",
+          "translations": [
+            {
+              "langCode": "en",
+              "translation": "Menu EN"
+            },
+            {
+              "langCode": "sk",
+              "translation": "Menu SK"
+            },
+            {
+              "langCode": "xx",
+              "translation": "Menu XX"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
