@@ -3,7 +3,7 @@
 # JaMLin
 **Ja**va **M**arkup **L**anguage **In**ternalisation is command line tool for internalisation of markup files (HTML, XML), that **keeps markup clean as it was meant to be**.
 
-It's like **_gettext_** but without need to make markup dirty with anything special functions or custom attributes. It uses JSON files to store your strings. Send these files to your translators with link to [**JaMLin Editor**](https://github.com/Wradgio/Jamlin-Editor/) app.
+It's like **_gettext_** but without need to make markup dirty with anything special functions or custom attributes. It uses JSON files to store your strings. Send these files to your translators with link to [**JaMLin Editor**](https://github.com/StretchShop/jamlin-editor-webcomponent) app.
 
 
 ## What is it good for
